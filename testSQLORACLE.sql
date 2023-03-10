@@ -97,13 +97,15 @@ END;
 SELECT DBMS_XMLGEN.GETXML('SELECT * FROM evento') docxml
 FROM dual; 
 
-
+--===========================================================================================================================================
+--====================================   Codigo funcional para la consulta del XML de evento    =============================================
+--===========================================================================================================================================
 DECLARE
 -- suma NUMBER(8) := 0;
 BEGIN
  FOR mi_w IN (SELECT b.*,            
-              EXTRACTVALUE(datoev,'/evento/fecha') AS fecha,
-              EXTRACTVALUE(datoev,'/evento/Building') AS nombre
+              EXTRACTVALUE(datoev,'/Evento/Fecha') AS fecha,
+              EXTRACTVALUE(datoev,'/Evento/Nombre') AS nombre
               FROM evento b) LOOP
   DBMS_OUTPUT.PUT_LINE(mi_w.code || CHR(10) || 
               mi_w.datoev.EXTRACT('/*').getStringVal() || 
@@ -113,3 +115,6 @@ BEGIN
 -- DBMS_OUTPUT.PUT_LINE('Total: ' || suma);
 END;
 /
+--===========================================================================================================================================
+--====================================   Codigo funcional para la consulta del XML de evento    =============================================
+--===========================================================================================================================================
