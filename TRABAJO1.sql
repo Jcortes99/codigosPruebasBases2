@@ -3,8 +3,8 @@
 
 CREATE OR REPLACE TRIGGER CONTROL_DATOEV
 BEFORE INSERT
-  ON evento
-  FOR EACH ROW
+    ON evento
+    FOR EACH ROW
 DECLARE
     cont NUMBER(2) := 0;
 BEGIN
@@ -48,4 +48,3 @@ END;
 -- Se debe de usar el Rise application error para parar la ejecución de la inserción, si se hace con excepciones propias y se catchean de igual forma se ejecuta el insert.
 
 delete from evento where code=991;
-                 
