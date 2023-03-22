@@ -133,6 +133,13 @@ BEGIN
         IF (passports.karateca IS NOT NULL AND passports.peleador IS NOT NULL) THEN
             getFromKarateca(passports.karateca, NOM, NICK);
             getFromPeleador(passports.peleador, OTRONOM, OTRONICK);
+            IF (NOM = OTRONOM) THEN
+                OTRONOM := NULL;
+            END IF;
+
+            IF (NICK = OTRONICK) THEN
+                OTRONICK := NULL;
+            END IF;
             PASSPORT := passports.karateca;
         ELSIF (passports.peleador IS NULL) THEN
             getFromKarateca(passports.karateca, NOM, NICK);
@@ -141,15 +148,7 @@ BEGIN
             getFromPeleador(passports.peleador, NOM, NICK);
             PASSPORT := passports.peleador;
         END IF;
-
-        IF (NOM = OTRONOM) THEN
-            OTRONOM := NULL;
-        END IF;
-
-        IF (NICK = OTRONICK) THEN
-            OTRONICK := NULL;
-        END IF;
-
+        
         INSERT INTO KaratecaPeleador VALUES (PASSPORT, NOM, OTRONOM, NICK, OTRONICK);
 
         NOM := NULL;
