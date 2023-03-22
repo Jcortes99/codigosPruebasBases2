@@ -42,11 +42,6 @@ INSERT INTO evento VALUES
                  <Ganador>1</Ganador>
                  <Tecnica>Mataleon fulminante</Tecnica>
                  </Pelea>
-                  <Pelea></Pelea>
-                  <Pelea></Pelea>
-                  <Pelea></Pelea>
-                  <Pelea></Pelea>
-                  <Pelea></Pelea>
                </Peleas>
              </Evento>'));
 
@@ -106,7 +101,6 @@ INSERT INTO peleador VALUES (666,
   ]
 }'
 );
-
 
 --Note que en la base de datos JSON hay cierta redundancia en cuanto a las peleas:
 --La información de cada pelea se repite dos veces (una vez en cada peleador), 

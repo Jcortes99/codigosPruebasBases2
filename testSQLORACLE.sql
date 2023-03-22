@@ -157,7 +157,7 @@ END;
 -- =========================================================================================================================================================================================
 
 
-CREATE TABLE karatecaPeleador (pasaporte NUMBER PRIMARY KEY NOT NULL,
+CREATE TABLE KaratecaPeleador (pasaporte NUMBER PRIMARY KEY NOT NULL,
                             nom VARCHAR2(256) NOT NULL,
                             otronom VARCHAR2(256),
                             nick VARCHAR2(256) NOT NULL,
