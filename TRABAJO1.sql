@@ -92,12 +92,6 @@ CREATE TABLE Pelea (consecutivo NUMBER PRIMARY KEY,
                             FOREIGN KEY(pas2) REFERENCES karatecaPeleador (pasaporte));
 
 
--- SELECT K.PASAPORTE, P.PASAPORTE FROM KARATECA K FULL JOIN PELEADOR P ON K.PASAPORTE = P.PASAPORTE;
-
--- (SELECT PASAPORTE FROM KARATECA) UNION
--- (SELECT PASAPORTE FROM PELEADOR WHERE PASAPORTE NOT IN (SELECT PASAPORTE FROM KARATECA)); 
-
-
 CREATE OR REPLACE PROCEDURE getFromKarateca (pasaport IN NUMBER, nombreout OUT VARCHAR2, nickout OUT VARCHAR2) IS
 BEGIN
     FOR person IN (SELECT
@@ -166,6 +160,16 @@ SELECT P.DATOPE.nombre from peleador p;
 CREATE SEQUENCE CONSECUTIVOS MINVALUE 1 START WITH 1
     INCREMENT BY 1 CACHE 20;
 
+CREATE OR REPLACE FUNCTION CHECK_PELEA(PAS1 NUMBER, PAS2 NUMBER)
+    RETURN BOOLEAN IS
+    BEGIN
+        FOR query IN (SELECT * FROM pelea 
+                    WHERE (PAS1 = PAS1 AND PAS2 = PAS2) OR (PAS1 = PAS2 AND PAS2 = PAS1)) LOOP
+          RETURN FALSE;
+        END LOOP;
+        RETURN TRUE;
+    END;
+/
 
 BEGIN
     FOR peleas IN (SELECT xt.*, EXTRACTVALUE (datoev, '/Evento/Nombre') as evento,
@@ -178,19 +182,26 @@ BEGIN
                             ganador  VARCHAR2(10) PATH 'Ganador',
                             tecnica  VARCHAR2(40) PATH 'Tecnica'
                             ) xt) LOOP
+
         INSERT INTO PELEA VALUES 
         (CONSECUTIVOS.NEXTVAL, peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), peleas.ganador, peleas.tecnica, peleas.evento);
     END LOOP;
 
-    FOR 
+    FOR peleas2 IN (SELECT p.pasaporte as pas1, xt.*
+                    FROM peleador p, JSON_TABLE(datope, '$.peleas[*]'
+                            COLUMNS (
+                            "pas2"  NUMBER(20) PATH '$.pasrival',
+                            "fecha"     VARCHAR2(20) PATH '$.fecha',
+                            "ganador"  NUMBER(10) PATH '$.ganador',
+                            "tecnica"  VARCHAR2(40) PATH '$.tecnica',
+                            "evento"  VARCHAR2(40) PATH '$.evento'
+                            )) xt) LOOP
+
+            IF CHECK_PELEA(peleas2.pas1, peleas2.pas2) THEN
+                INSERT INTO PELEA VALUES 
+                (CONSECUTIVOS.NEXTVAL, peleas2.pas1, peleas2.pas2, TO_DATE(peleas2.fecha, 'DD/MM/YYYY'), peleas2.ganador, peleas2.tecnica, peleas2.evento);
+            END IF;
+    END LOOP;
 END;
 /
 
-SELECT xt.*
-                    FROM peleador p, JSON_TABLE(datope, '$.peleas[*]'
-                            COLUMNS (
-                            "fecha"     VARCHAR2(20) PATH 'Pas1',
-                            "pasrival"  NUMBER(20) PATH 'Pas2',
-                            "ganador"  VARCHAR2(10) PATH 'Ganador',
-                            "tecnica"  VARCHAR2(40) PATH 'Tecnica'
-                            )) xt
