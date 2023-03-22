@@ -1,3 +1,5 @@
+select table_name from user_tables order by table_name;
+
 DROP TABLE karateca;
 CREATE TABLE karateca(
   pasaporte NUMBER(20) PRIMARY KEY,
@@ -28,19 +30,14 @@ CREATE TABLE evento(
 
 INSERT INTO evento VALUES 
 (991, XMLTYPE('<Evento>  
-               <Fecha>30/01/2023</Fecha>
-               <Nombre>Kick that B88ch</Nombre>
+               <Fecha>11/12/2024</Fecha>
+               <Nombre>Artes marciales de Namek</Nombre>
                <Peleas>
                  <Pelea>
-                 <Pas1>55</Pas1>
+                 <Pas1>29</Pas1>
                  <Pas2>66</Pas2>
-                 <Ganador>0</Ganador>
-                 </Pelea>
-                 <Pelea>
-                 <Pas1>55</Pas1>
-                 <Pas2>29</Pas2>
                  <Ganador>1</Ganador>
-                 <Tecnica>Mataleon fulminante</Tecnica>
+                 <Tecnica>Kame hame ha</Tecnica>
                  </Pelea>
                </Peleas>
              </Evento>'));
@@ -52,6 +49,19 @@ CREATE TABLE peleador(
   pasaporte  NUMBER(20) PRIMARY KEY,
   datope JSON NOT NULL
 );
+
+-- FOR ORACLE LIVE
+DROP TABLE peleador;
+CREATE TABLE peleador(
+  pasaporte  NUMBER(20) PRIMARY KEY,
+  datope BLOB NOT NULL
+);
+
+alter table peleador 
+	add constraint datope
+	check (datope is json)
+
+---------------------------------------------------------
 
 INSERT INTO peleador VALUES (55,
 '{
