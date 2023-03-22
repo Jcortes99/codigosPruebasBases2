@@ -7,6 +7,8 @@ BEFORE INSERT
   FOR EACH ROW
 DECLARE
     cont NUMBER(2) := 0;
+    CURSOR check_pas1;
+    CURSOR check_pas2;
 BEGIN
     
     FOR pelea IN (SELECT xt.*
@@ -36,6 +38,19 @@ BEGIN
         IF (pelea.ganador != 0 AND pelea.tecnica IS NULL) THEN
             raise_application_error(-20003, 'Hay ganador sin técnica');
         END IF;
+
+        IF (pelea.ganador != 0 AND pelea.ganador != 1 AND pelea.ganador = 2) THEN
+            raise_application_error(-20006, 'El valor del campo ganador solo puede ser 0, 1 o 2.');
+        END IF;
+        
+        IF (SELECT * FROM karateca WHERE pasaporte = pelea.pas1) IS NULL THEN 
+            raise_application_error(-20003, 'Pasaporte no encontrado: '||pelea.pas1);
+        END IF;
+
+        IF (SELECT * FROM karateca WHERE pasaporte = pelea.pas2) IS NULL THEN 
+            raise_application_error(-20003, 'Pasaporte no encontrado: '||pelea.pas2);
+        END IF;
+
     END LOOP;
 
     IF cont < 1 THEN 
