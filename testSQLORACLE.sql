@@ -187,18 +187,18 @@ CREATE OR REPLACE PROCEDURE tablemerge IS
     nombre VARCHAR2(256);
     nick VARCHAR2(256);
 BEGIN
-    prueba2(29, nombre, nick);
+    getkarateca(29, nombre, nick);
+    DBMS_OUTPUT.PUT_LINE(nombre);
+    DBMS_OUTPUT.PUT_LINE(nick);
 END;
 /
 
 CREATE OR REPLACE PROCEDURE getkarateca (pasaport IN karateca.pasaporte%TYPE, nombreout OUT VARCHAR2, nickout OUT VARCHAR2) IS
-    cadena VARCHAR2(1000);
 BEGIN
     FOR persona IN (SELECT b.*,
         EXTRACTVALUE (datoka, '/Karateca/Nombre') AS nombreKarateca,
         EXTRACTVALUE (datoka, '/Karateca/Nickname') AS nickKarateca
         FROM karateca b WHERE pasaporte = pasaport) LOOP
-        cadena := (persona.nombreKarateca || ' ' || persona.nickKarateca);
         nombreout := persona.nombreKarateca;
         nickout := persona.nickKarateca;
     END LOOP;
@@ -206,8 +206,20 @@ END;
 /
 
 
+CREATE OR REPLACE PROCEDURE getPeleador(pasaport IN peleador.pasaporte%TYPE, nombreout OUT VARCHAR2, nickout OUT VARCHAR2) IS
+BEGIN
+    FOR persona IN (SELECT p.datope.nombre AS nombreP, p.datope.nickname AS nickP FROM peleador p WHERE pasaporte = pasaport) LOOP
+        nombreout := persona.nombreP;
+        nickout := persona.nickP;
+    DBMS_OUTPUT.PUT_LINE(nombreout);
+    DBMS_OUTPUT.PUT_LINE(nickout);
+    END LOOP;
+END;
+/
+
+
 CREATE OR REPLACE PROCEDURE getevento (codein IN evento.code%TYPE, fecha OUT DATE, pas1 OUT VARCHAR2, 
-                                    pas2 OUT karateca.pasaporte%TYPE, winner OUT karateca.pasaporte%TYPE, tecnica OUT VARCHAR2, nombre OUT VARCHAR2) IS
+                                    pas2 OUT karateca.pasaporte%TYPE, winner OUT NUMBER, tecnica OUT VARCHAR2, nombre OUT VARCHAR2) IS
 BEGIN
     DBMS_OUTPUT.PUT_LINE('Entro a getEvento');
     FOR evento IN (SELECT b.*,
@@ -268,6 +280,7 @@ BEGIN
                             tecnica  VARCHAR2(100) PATH 'Tecnica'
                             ) xt) LOOP
         DBMS_OUTPUT.PUT_LINE(pas1);
+        DBMS_OUTPUT.PUT_LINE(pas2);
     END LOOP;
 END;
 /
