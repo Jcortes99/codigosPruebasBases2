@@ -160,17 +160,19 @@ SELECT P.DATOPE.nombre from peleador p;
 CREATE SEQUENCE CONSECUTIVOS MINVALUE 1 START WITH 1
     INCREMENT BY 1 CACHE 20;
 
-CREATE OR REPLACE FUNCTION CHECK_PELEA(PAS1 NUMBER, PAS2 NUMBER)
+---- FUNCION PARA EVITAR COLISIONES EN LA INSERCIÓN
+CREATE OR REPLACE FUNCTION CHECK_PELEA(PASPORT1 NUMBER, PASPORT2 NUMBER)
     RETURN BOOLEAN IS
     BEGIN
         FOR query IN (SELECT * FROM pelea 
-                    WHERE (PAS1 = PAS1 AND PAS2 = PAS2) OR (PAS1 = PAS2 AND PAS2 = PAS1)) LOOP
+                    WHERE (PAS1 = PASPORT1 AND PAS2 = PASPORT2) OR (PAS1 = PASPORT2 AND PAS2 = PASPORT1)) LOOP
           RETURN FALSE;
         END LOOP;
         RETURN TRUE;
     END;
 /
 
+---- PROCEDIMIENTO QUE LLENA LA TABLA
 BEGIN
     FOR peleas IN (SELECT xt.*, EXTRACTVALUE (datoev, '/Evento/Nombre') as evento,
                 EXTRACTVALUE (datoev, '/Evento/Fecha') as fecha
@@ -183,18 +185,20 @@ BEGIN
                             tecnica  VARCHAR2(40) PATH 'Tecnica'
                             ) xt) LOOP
 
-        INSERT INTO PELEA VALUES 
-        (CONSECUTIVOS.NEXTVAL, peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), peleas.ganador, peleas.tecnica, peleas.evento);
+            IF CHECK_PELEA(peleas.pas1, peleas.pas2) THEN
+                INSERT INTO PELEA VALUES 
+                (CONSECUTIVOS.NEXTVAL, peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), peleas.ganador, peleas.tecnica, peleas.evento);
+            END IF;
     END LOOP;
 
     FOR peleas2 IN (SELECT p.pasaporte as pas1, xt.*
                     FROM peleador p, JSON_TABLE(datope, '$.peleas[*]'
                             COLUMNS (
-                            "pas2"  NUMBER(20) PATH '$.pasrival',
-                            "fecha"     VARCHAR2(20) PATH '$.fecha',
-                            "ganador"  NUMBER(10) PATH '$.ganador',
-                            "tecnica"  VARCHAR2(40) PATH '$.tecnica',
-                            "evento"  VARCHAR2(40) PATH '$.evento'
+                            "PAS2"  NUMBER(20) PATH '$.pasrival',
+                            "FECHA"     VARCHAR2(20) PATH '$.fecha',
+                            "GANADOR"  NUMBER(10) PATH '$.ganador',
+                            "TECNICA"  VARCHAR2(40) PATH '$.tecnica',
+                            "EVENTO"  VARCHAR2(40) PATH '$.evento'
                             )) xt) LOOP
 
             IF CHECK_PELEA(peleas2.pas1, peleas2.pas2) THEN
@@ -204,4 +208,3 @@ BEGIN
     END LOOP;
 END;
 /
-
