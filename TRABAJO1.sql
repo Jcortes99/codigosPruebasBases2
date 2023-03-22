@@ -129,6 +129,7 @@ BEGIN
     FOR passports IN (SELECT K.PASAPORTE AS KARATECA,
                              P.PASAPORTE AS PELEADOR 
                         FROM KARATECA K FULL JOIN PELEADOR P ON K.PASAPORTE = P.PASAPORTE) LOOP
+        
         IF (passports.karateca IS NOT NULL AND passports.peleador IS NOT NULL) THEN
             getFromKarateca(passports.karateca, NOM, NICK);
             getFromPeleador(passports.peleador, OTRONOM, OTRONICK);
@@ -139,6 +140,14 @@ BEGIN
         ELSE
             getFromPeleador(passports.peleador, NOM, NICK);
             PASSPORT := passports.peleador;
+        END IF;
+
+        IF (NOM = OTRONOM) THEN
+            OTRONOM := NULL;
+        END IF;
+
+        IF (NICK = OTRONICK) THEN
+            OTRONICK := NULL;
         END IF;
 
         INSERT INTO KaratecaPeleador VALUES (PASSPORT, NOM, OTRONOM, NICK, OTRONICK);
