@@ -1,14 +1,22 @@
 
 -- PRIMER PUNTO TRIGGER CON EXCEPTIONS (25%)
 
+CREATE OR REPLACE FUNCTION CHECK_PASSPORT(PASSPORT NUMBER)
+    RETURN BOOLEAN IS
+    BEGIN
+        FOR query IN (SELECT * FROM karateca WHERE pasaporte = PASSPORT) LOOP
+          RETURN FALSE;
+        END LOOP;
+        RETURN TRUE;
+    END;
+/
+    
 CREATE OR REPLACE TRIGGER CONTROL_DATOEV
 BEFORE INSERT
   ON evento
   FOR EACH ROW
 DECLARE
     cont NUMBER(2) := 0;
-    CURSOR check_pas1;
-    CURSOR check_pas2;
 BEGIN
     
     FOR pelea IN (SELECT xt.*
@@ -43,11 +51,11 @@ BEGIN
             raise_application_error(-20006, 'El valor del campo ganador solo puede ser 0, 1 o 2.');
         END IF;
         
-        IF (SELECT * FROM karateca WHERE pasaporte = pelea.pas1) IS NULL THEN 
+        IF CHECK_PASSPORT(pelea.pas1) THEN 
             raise_application_error(-20003, 'Pasaporte no encontrado: '||pelea.pas1);
         END IF;
 
-        IF (SELECT * FROM karateca WHERE pasaporte = pelea.pas2) IS NULL THEN 
+        IF CHECK_PASSPORT(pelea.pas2) THEN 
             raise_application_error(-20003, 'Pasaporte no encontrado: '||pelea.pas2);
         END IF;
 

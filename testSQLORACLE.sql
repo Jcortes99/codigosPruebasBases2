@@ -259,14 +259,14 @@ CREATE OR REPLACE PROCEDURE getevento IS
 BEGIN
     DBMS_OUTPUT.PUT_LINE('Entro a getEvento');
     FOR pelea IN (SELECT xt.*
-                    FROM XMLTABLE('/Evento/Peleas/Pelea'
-                            PASSING :datoev
+                    FROM evento e, XMLTABLE('/Evento/Peleas/Pelea'
+                            PASSING e.datoev
                             COLUMNS 
                             pas1     NUMBER(20) PATH 'Pas1',
                             pas2     NUMBER(20) PATH 'Pas2',
                             ganador  VARCHAR2(100) PATH 'Ganador',
                             tecnica  VARCHAR2(100) PATH 'Tecnica'
-                            ) evento xt) LOOP
+                            ) xt) LOOP
         DBMS_OUTPUT.PUT_LINE(pas1);
     END LOOP;
 END;
