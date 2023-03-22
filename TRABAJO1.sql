@@ -18,7 +18,7 @@ BEFORE INSERT
   ON evento
   FOR EACH ROW
 DECLARE
-    cont NUMBER(2) := 0;
+    cont NUMBER := 0;
 BEGIN
     
     FOR peleas IN (SELECT xt.*
@@ -75,17 +75,17 @@ END;
 -- ==================================================================================================================
 
 
-CREATE TABLE KaratecaPeleador (pasaporte NUMBER PRIMARY KEY NOT NULL,
+CREATE TABLE KaratecaPeleador (pasaporte NUMBER(20) PRIMARY KEY NOT NULL,
                             nom VARCHAR2(40) NOT NULL,
                             otronom VARCHAR2(40),
                             nick VARCHAR2(40) NOT NULL,
                             otronick VARCHAR2(40));
 
 CREATE TABLE Pelea (consecutivo NUMBER PRIMARY KEY,
-                            pas1 NUMBER NOT NULL,
-                            pas2 NUMBER NOT NULL,
+                            pas1 NUMBER(20) NOT NULL,
+                            pas2 NUMBER(20) NOT NULL,
                             fecha DATE NOT NULL,
-                            ganador NUMBER(1) NOT NULL,
+                            ganador NUMBER NOT NULL,
                             tecnica VARCHAR2(40),
                             evento VARCHAR2(40),
                             FOREIGN KEY(pas1) REFERENCES karatecaPeleador (pasaporte),
@@ -126,7 +126,7 @@ END;
 -------------------    PARA LLENAR LA TABLA KARATECA-PELEADOR     ----------------------
 ----------------------------------------------------------------------------------------
 DECLARE
-    PASSPORT NUMBER;
+    PASSPORT NUMBER(20);
     NOM VARCHAR2(40);
     OTRONOM VARCHAR2(40);
     NICK VARCHAR2(40);
@@ -182,20 +182,15 @@ BEGIN
         (CONSECUTIVOS.NEXTVAL, peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), peleas.ganador, peleas.tecnica, peleas.evento);
     END LOOP;
 
+    FOR 
 END;
 /
 
-
-
-
-
-SELECT xt.*, EXTRACTVALUE (datoev, '/Evento/Nombre') as evento,
-                EXTRACTVALUE (datoev, '/Evento/Fecha') as fecha
-                    FROM evento e, XMLTABLE('/Evento/Peleas/Pelea'
-                            PASSING e.datoev
-                            COLUMNS 
-                            pas1     NUMBER(20) PATH 'Pas1',
-                            pas2     NUMBER(20) PATH 'Pas2',
-                            ganador  VARCHAR2(10) PATH 'Ganador',
-                            tecnica  VARCHAR2(40) PATH 'Tecnica'
-                            ) xt;
+SELECT xt.*
+                    FROM peleador p, JSON_TABLE(datope, '$.peleas[*]'
+                            COLUMNS (
+                            "fecha"     VARCHAR2(20) PATH 'Pas1',
+                            "pasrival"  NUMBER(20) PATH 'Pas2',
+                            "ganador"  VARCHAR2(10) PATH 'Ganador',
+                            "tecnica"  VARCHAR2(40) PATH 'Tecnica'
+                            )) xt
