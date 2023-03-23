@@ -44,7 +44,7 @@ BEGIN
         IF (peleas.ganador != 0 AND peleas.ganador != 1 AND peleas.ganador != 2) THEN
             raise_application_error(-20006, 'El valor del campo ganador solo puede ser 0, 1 o 2.');
         END IF;
-
+        
         IF (peleas.ganador = 0 AND peleas.tecnica IS NOT NULL) THEN
             raise_application_error(-20002, 'Hay empate con técnica');
         END IF;
@@ -53,6 +53,16 @@ BEGIN
             raise_application_error(-20003, 'Hay ganador sin técnica');
         END IF;
 
+
+        IF (peleas.ganador != 0 AND peleas.ganador != 1 AND peleas.ganador != 2) THEN
+            raise_application_error(-20006, 'El valor del campo ganador solo puede ser 0, 1 o 2.');
+        END IF;
+        
+        
+        IF (peleas.ganador != 0 AND peleas.ganador != 1 AND peleas.ganador != 2) THEN
+            raise_application_error(-20006, 'El valor del campo ganador solo puede ser 0, 1 o 2.');
+        END IF;
+        
         IF CHECK_PASSPORT(peleas.pas1) THEN 
             raise_application_error(-20003, 'Pasaporte no encontrado: '||peleas.pas1);
         END IF;
@@ -86,8 +96,8 @@ CREATE TABLE Pelea (consecutivo NUMBER PRIMARY KEY,
                             pas2 NUMBER(20) NOT NULL,
                             fecha DATE NOT NULL,
                             ganador NUMBER NOT NULL,
-                            tecnica VARCHAR2(40) NOT NULL,
-                            evento VARCHAR2(40) NOT NULL,
+                            tecnica VARCHAR2(40),
+                            evento VARCHAR2(40),
                             FOREIGN KEY(pas1) REFERENCES karatecaPeleador (pasaporte),
                             FOREIGN KEY(pas2) REFERENCES karatecaPeleador (pasaporte));
 
@@ -185,9 +195,10 @@ CREATE OR REPLACE FUNCTION CHECK_PELEA(PASPORT1 NUMBER, PASPORT2 NUMBER, FCHA DA
     RETURN BOOLEAN IS
     BEGIN
         FOR query IN (SELECT * FROM pelea P
-                    WHERE (((P.PAS1 = PASPORT1 AND P.PAS2 = PASPORT2) 
+                    WHERE ((P.PAS1 = PASPORT1 AND P.PAS2 = PASPORT2) 
                         OR (P.PAS1 = PASPORT2 AND P.PAS2 = PASPORT1)) AND (P.FECHA = FCHA) 
-                        AND (P.TECNICA = TEC) AND (P.EVENTO = EVEN))) LOOP
+                        AND ((P.TECNICA IS NOT NULL AND P.TECNICA = TEC) OR (P.TECNICA IS NULL AND TEC IS NULL))
+                        AND ((P.EVENTO IS NOT NULL AND P.EVENTO = EVEN) OR (P.EVENTO IS NULL AND EVEN IS NULL))) LOOP
           RETURN FALSE;
         END LOOP;
         RETURN TRUE; 
@@ -195,9 +206,6 @@ CREATE OR REPLACE FUNCTION CHECK_PELEA(PASPORT1 NUMBER, PASPORT2 NUMBER, FCHA DA
 /
 
 ---- PROCEDIMIENTO QUE LLENA LA TABLA
-DECLARE
-    NEWTECNICA VARCHAR2(40);
-    NEWEVENTO VARCHAR2(40);
 BEGIN
     FOR peleas IN (SELECT xt.*, EXTRACTVALUE (datoev, '/Evento/Nombre') as evento,
                 EXTRACTVALUE (datoev, '/Evento/Fecha') as fecha
@@ -209,13 +217,10 @@ BEGIN
                             ganador  VARCHAR2(10) PATH 'Ganador',
                             tecnica  VARCHAR2(40) PATH 'Tecnica'
                             ) xt) LOOP
-            IF (peleas.tecnica IS NULL) THEN NEWTECNICA := ' '; ELSE NEWTECNICA := peleas.tecnica; END IF;
-            IF (peleas.evento IS NULL) THEN NEWEVENTO := ' '; ELSE NEWEVENTO := peleas.evento; END IF;
-            IF CHECK_PELEA(peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'),
-                            NEWTECNICA, NEWEVENTO) THEN
+
+            IF CHECK_PELEA(peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), peleas.tecnica, peleas.evento) THEN
                 INSERT INTO PELEA VALUES 
-                    (CONSECUTIVOS.NEXTVAL, peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), 
-                    peleas.ganador, NEWTECNICA, NEWEVENTO);
+                (CONSECUTIVOS.NEXTVAL, peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), peleas.ganador, peleas.tecnica, peleas.evento);
             END IF;
     END LOOP;
 
@@ -228,13 +233,10 @@ BEGIN
                             "TECNICA"  VARCHAR2(40) PATH '$.tecnica',
                             "EVENTO"  VARCHAR2(40) PATH '$.evento'
                             )) xt) LOOP
-            IF (peleas2.tecnica IS NULL) THEN NEWTECNICA := ' '; ELSE NEWTECNICA := peleas2.tecnica; END IF;
-            IF (peleas2.evento IS NULL) THEN NEWEVENTO := ' '; ELSE NEWEVENTO := peleas2.evento; END IF;
-            IF CHECK_PELEA(peleas2.pas1, peleas2.pas2, TO_DATE(peleas2.fecha, 'DD/MM/YYYY'), 
-                            NEWTECNICA, NEWEVENTO) THEN
+
+            IF CHECK_PELEA(peleas2.pas1, peleas2.pas2, TO_DATE(peleas2.fecha, 'DD/MM/YYYY'), peleas2.tecnica, peleas2.evento) THEN
                 INSERT INTO PELEA VALUES 
-                    (CONSECUTIVOS.NEXTVAL, peleas2.pas1, peleas2.pas2, TO_DATE(peleas2.fecha, 'DD/MM/YYYY'), 
-                    peleas2.ganador, NEWTECNICA, NEWEVENTO);
+                (CONSECUTIVOS.NEXTVAL, peleas2.pas1, peleas2.pas2, TO_DATE(peleas2.fecha, 'DD/MM/YYYY'), peleas2.ganador, peleas2.tecnica, peleas2.evento);
             END IF;
     END LOOP;
 END;

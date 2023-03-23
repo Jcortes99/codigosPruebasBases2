@@ -40,6 +40,11 @@ INSERT INTO evento VALUES
                  <Tecnica>Migate no gokui</Tecnica>
                  </Pelea>
                  <Pelea>
+                 <Pas1>66</Pas1>
+                 <Pas2>60</Pas2>
+                 <Ganador>0</Ganador>
+                 </Pelea>
+                 <Pelea>
                  <Pas1>29</Pas1>
                  <Pas2>55</Pas2>
                  <Ganador>0</Ganador>
@@ -83,6 +88,12 @@ INSERT INTO peleador VALUES (55,
       "pasrival": "666",
       "ganador": 1,
       "tecnica": "Llave del dragon"     
+    },
+    {
+      "fecha": "25/01/2023",
+      "pasrival": "70",
+      "ganador": 2,
+      "tecnica": "Teletransportacion"     
     }
   ]
 }'
