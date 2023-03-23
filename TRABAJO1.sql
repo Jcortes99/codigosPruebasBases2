@@ -49,7 +49,7 @@ BEGIN
             raise_application_error(-20003, 'Hay ganador sin técnica');
         END IF;
 
-        IF (peleas.ganador != 0 AND peleas.ganador != 1 AND peleas.ganador = 2) THEN
+        IF (peleas.ganador != 0 AND peleas.ganador != 1 AND peleas.ganador != 2) THEN
             raise_application_error(-20006, 'El valor del campo ganador solo puede ser 0, 1 o 2.');
         END IF;
         
@@ -116,6 +116,17 @@ BEGIN
 END;
 /
 
+-- SI SE VUELVE A CORRER EL SCRIPT PARA LLENAR LA TABLA  ESTA FUNCIÓN AYUDA A QUE SE INSERTEN ÚNICAMENTE 
+-- LOS NUEVOS REGISTROS
+CREATE OR REPLACE FUNCTION CHECK_KARATECAPELEADOR(pasaport1 NUMBER, pasaport2 NUMBER)
+    RETURN BOOLEAN IS
+    BEGIN
+        FOR query IN (SELECT * FROM KaratecaPeleador WHERE pasaporte = pasaport1 OR pasaporte = pasaport2) LOOP
+          RETURN FALSE;
+        END LOOP;
+        RETURN TRUE;
+    END;
+/
 ----------------------------------------------------------------------------------------
 -------------------    PARA LLENAR LA TABLA KARATECA-PELEADOR     ----------------------
 ----------------------------------------------------------------------------------------
@@ -130,26 +141,28 @@ BEGIN
                              P.PASAPORTE AS PELEADOR 
                         FROM KARATECA K FULL JOIN PELEADOR P ON K.PASAPORTE = P.PASAPORTE) LOOP
         
-        IF (passports.karateca IS NOT NULL AND passports.peleador IS NOT NULL) THEN
-            getFromKarateca(passports.karateca, NOM, NICK);
-            getFromPeleador(passports.peleador, OTRONOM, OTRONICK);
-            IF (NOM = OTRONOM) THEN
-                OTRONOM := NULL;
-            END IF;
+        IF CHECK_KARATECAPELEADOR(passports.karateca, passports.peleador) THEN
+            IF (passports.karateca IS NOT NULL AND passports.peleador IS NOT NULL) THEN
+                getFromKarateca(passports.karateca, NOM, NICK);
+                getFromPeleador(passports.peleador, OTRONOM, OTRONICK);
+                IF (NOM = OTRONOM) THEN
+                    OTRONOM := NULL;
+                END IF;
 
-            IF (NICK = OTRONICK) THEN
-                OTRONICK := NULL;
+                IF (NICK = OTRONICK) THEN
+                    OTRONICK := NULL;
+                END IF;
+                PASSPORT := passports.karateca;
+            ELSIF (passports.peleador IS NULL) THEN
+                getFromKarateca(passports.karateca, NOM, NICK);
+                PASSPORT := passports.karateca;
+            ELSE
+                getFromPeleador(passports.peleador, NOM, NICK);
+                PASSPORT := passports.peleador;
             END IF;
-            PASSPORT := passports.karateca;
-        ELSIF (passports.peleador IS NULL) THEN
-            getFromKarateca(passports.karateca, NOM, NICK);
-            PASSPORT := passports.karateca;
-        ELSE
-            getFromPeleador(passports.peleador, NOM, NICK);
-            PASSPORT := passports.peleador;
+            
+            INSERT INTO KaratecaPeleador VALUES (PASSPORT, NOM, OTRONOM, NICK, OTRONICK);
         END IF;
-        
-        INSERT INTO KaratecaPeleador VALUES (PASSPORT, NOM, OTRONOM, NICK, OTRONICK);
 
         NOM := NULL;
         OTRONOM := NULL;
@@ -159,7 +172,6 @@ BEGIN
 END;
 /
 
-SELECT P.DATOPE.nombre from peleador p;
 ----------------------------------------------------------------------------------------
 -------------------------        LLENADO DE LA TABLA PELEA     -------------------------
 ----------------------------------------------------------------------------------------
@@ -169,14 +181,17 @@ CREATE SEQUENCE CONSECUTIVOS MINVALUE 1 START WITH 1
     INCREMENT BY 1 CACHE 20;
 
 ---- FUNCION PARA EVITAR COLISIONES EN LA INSERCIÓN
-CREATE OR REPLACE FUNCTION CHECK_PELEA(PASPORT1 NUMBER, PASPORT2 NUMBER)
+CREATE OR REPLACE FUNCTION CHECK_PELEA(PASPORT1 NUMBER, PASPORT2 NUMBER, FECHA DATE, TECNICA VARCHAR2, EVENTO VARCHAR2)
     RETURN BOOLEAN IS
     BEGIN
-        FOR query IN (SELECT * FROM pelea 
-                    WHERE (PAS1 = PASPORT1 AND PAS2 = PASPORT2) OR (PAS1 = PASPORT2 AND PAS2 = PASPORT1)) LOOP
+        FOR query IN (SELECT * FROM pelea P
+                    WHERE ((P.PAS1 = PASPORT1 AND P.PAS2 = PASPORT2) 
+                        OR (P.PAS1 = PASPORT2 AND P.PAS2 = PASPORT1)) AND (P.FECHA = FECHA) 
+                        AND ((P.TECNICA IS NOT NULL AND P.TECNICA = TECNICA) OR (P.TECNICA IS NULL AND TECNICA IS NULL))
+                        AND ((P.EVENTO IS NOT NULL AND P.EVENTO = EVENTO) OR (P.EVENTO IS NULL AND EVENTO IS NULL))) LOOP
           RETURN FALSE;
         END LOOP;
-        RETURN TRUE;
+        RETURN TRUE; 
     END;
 /
 
@@ -193,7 +208,7 @@ BEGIN
                             tecnica  VARCHAR2(40) PATH 'Tecnica'
                             ) xt) LOOP
 
-            IF CHECK_PELEA(peleas.pas1, peleas.pas2) THEN
+            IF CHECK_PELEA(peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), peleas.tecnica, peleas.evento) THEN
                 INSERT INTO PELEA VALUES 
                 (CONSECUTIVOS.NEXTVAL, peleas.pas1, peleas.pas2, TO_DATE(peleas.fecha, 'DD/MM/YYYY'), peleas.ganador, peleas.tecnica, peleas.evento);
             END IF;
@@ -209,10 +224,16 @@ BEGIN
                             "EVENTO"  VARCHAR2(40) PATH '$.evento'
                             )) xt) LOOP
 
-            IF CHECK_PELEA(peleas2.pas1, peleas2.pas2) THEN
+            IF CHECK_PELEA(peleas2.pas1, peleas2.pas2, TO_DATE(peleas2.fecha, 'DD/MM/YYYY'), peleas2.tecnica, peleas2.evento) THEN
                 INSERT INTO PELEA VALUES 
                 (CONSECUTIVOS.NEXTVAL, peleas2.pas1, peleas2.pas2, TO_DATE(peleas2.fecha, 'DD/MM/YYYY'), peleas2.ganador, peleas2.tecnica, peleas2.evento);
             END IF;
     END LOOP;
 END;
 /
+
+SELECT * FROM pelea P
+                    WHERE ((P.PAS1 = 55 AND P.PAS2 = 29) 
+                        OR (P.PAS1 = 29 AND P.PAS2 = 55)) AND (P.FECHA = TO_DATE('30/01/23', 'DD/MM/YYYY'))
+                        AND ((P.TECNICA IS NOT NULL AND P.TECNICA = 'Mataleon fulminante') OR (P.TECNICA IS NULL))
+                        AND ((P.EVENTO IS NOT NULL AND P.EVENTO = 'Kick that B88ch') OR (P.EVENTO IS NULL));

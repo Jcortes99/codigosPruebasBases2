@@ -18,9 +18,9 @@ INSERT INTO karateca VALUES
              </Karateca>'));
 
 INSERT INTO karateca VALUES 
-(29, XMLTYPE('<Karateca>  
-               <Nombre>Ariana Grande</Nombre>
-               <Nickname>Mor</Nickname>
+(60, XMLTYPE('<Karateca>  
+               <Nombre>Goku</Nombre>
+               <Nickname>God</Nickname>
              </Karateca>'));
 
 DROP TABLE evento;
@@ -29,15 +29,20 @@ CREATE TABLE evento(
   datoev XMLTYPE);
 
 INSERT INTO evento VALUES 
-(991, XMLTYPE('<Evento>  
-               <Fecha>11/12/2024</Fecha>
+(992, XMLTYPE('<Evento>  
+               <Fecha>17/07/2021</Fecha>
                <Nombre>Artes marciales de Namek</Nombre>
                <Peleas>
                  <Pelea>
-                 <Pas1>29</Pas1>
+                 <Pas1>60</Pas1>
                  <Pas2>66</Pas2>
                  <Ganador>1</Ganador>
-                 <Tecnica>Kame hame ha</Tecnica>
+                 <Tecnica>Migate no gokui</Tecnica>
+                 </Pelea>
+                 <Pelea>
+                 <Pas1>29</Pas1>
+                 <Pas2>55</Pas2>
+                 <Ganador>0</Ganador>
                  </Pelea>
                </Peleas>
              </Evento>'));
@@ -83,15 +88,16 @@ INSERT INTO peleador VALUES (55,
 }'
 );
 
-INSERT INTO peleador VALUES (500,
+INSERT INTO peleador VALUES (60,
 '{
-  "nombre": "Cathy Dennis",
-  "nickname": "Touch me",
+  "nombre": "Goku SSJ",
+  "nickname": "God",
   "peleas": [
     {
-      "fecha": "25/01/2023",
-      "pasrival": 55,
-      "ganador": 0
+      "fecha": "28/02/2023",
+      "pasrival": 29,
+      "ganador": 2,
+      "tecnica": "Aturdimiento"
     }
   ]
 }'
