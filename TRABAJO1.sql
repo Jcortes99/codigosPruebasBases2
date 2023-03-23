@@ -49,7 +49,7 @@ BEGIN
             raise_application_error(-20003, 'Hay ganador sin técnica');
         END IF;
 
-        IF (peleas.ganador != 0 AND peleas.ganador != 1 AND peleas.ganador = 2) THEN
+        IF (peleas.ganador != 0 AND peleas.ganador != 1 AND peleas.ganador != 2) THEN
             raise_application_error(-20006, 'El valor del campo ganador solo puede ser 0, 1 o 2.');
         END IF;
         

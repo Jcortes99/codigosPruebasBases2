@@ -284,3 +284,134 @@ BEGIN
     END LOOP;
 END;
 /
+
+
+
+-- ================================================================
+-- dos iguales
+INSERT INTO evento VALUES 
+(9910, XMLTYPE('<Evento>  
+               <Fecha>30/01/2023</Fecha>
+               <Nombre>Kick that B88ch</Nombre>
+               <Peleas>
+                 <Pelea>
+                 <Pas1>55</Pas1>
+                 <Pas2>66</Pas2>
+                 <Ganador>0</Ganador>
+                 </Pelea>
+                 <Pelea>
+                 <Pas1>55</Pas1>
+                 <Pas2>55</Pas2>
+                 <Ganador>1</Ganador>
+                 <Tecnica>Mataleon fulminante</Tecnica>
+                 </Pelea>
+               </Peleas>
+             </Evento>'));
+
+-- ambos existen
+INSERT INTO evento VALUES 
+(9190, XMLTYPE('<Evento>  
+            <Fecha>30/01/2023</Fecha>
+            <Nombre>Kick that B88ch</Nombre>
+            <Peleas>
+                <Pelea>
+                <Pas1>55</Pas1>
+                <Pas2>66</Pas2>
+                <Ganador>0</Ganador>
+                </Pelea>
+                <Pelea>
+                <Pas1>55</Pas1>
+                <Pas2>29</Pas2>
+                <Ganador>1</Ganador>
+                <Tecnica>Mataleon fulminante</Tecnica>
+                </Pelea>
+            </Peleas>
+            </Evento>'));
+
+-- uno de los dos no existe
+INSERT INTO evento VALUES 
+(991, XMLTYPE('<Evento>  
+            <Fecha>30/01/2023</Fecha>
+            <Nombre>Kick that B88ch</Nombre>
+            <Peleas>
+                <Pelea>
+                <Pas1>54</Pas1>
+                <Pas2>66</Pas2>
+                <Ganador>0</Ganador>
+                </Pelea>
+                <Pelea>
+                <Pas1>55</Pas1>
+                <Pas2>29</Pas2>
+                <Ganador>1</Ganador>
+                <Tecnica>Mataleon fulminante</Tecnica>
+                </Pelea>
+            </Peleas>
+            </Evento>'));
+
+-- uno de los dos no existe
+INSERT INTO evento VALUES 
+(992, XMLTYPE('<Evento>  
+            <Fecha>30/01/2023</Fecha>
+            <Nombre>Kick that B88ch</Nombre>
+            <Peleas>
+                <Pelea>
+                <Pas1>55</Pas1>
+                <Pas2>69</Pas2>
+                <Ganador>0</Ganador>
+                </Pelea>
+                <Pelea>
+                <Pas1>55</Pas1>
+                <Pas2>29</Pas2>
+                <Ganador>1</Ganador>
+                <Tecnica>Mataleon fulminante</Tecnica>
+                </Pelea>
+            </Peleas>
+            </Evento>'));
+
+-- ninguno existe
+INSERT INTO evento VALUES 
+(992, XMLTYPE('<Evento>  
+            <Fecha>30/01/2023</Fecha>
+            <Nombre>Kick that B88ch</Nombre>
+            <Peleas>
+                <Pelea>
+                <Pas1>56</Pas1>
+                <Pas2>67</Pas2>
+                <Ganador>0</Ganador>
+                </Pelea>
+                <Pelea>
+                <Pas1>55</Pas1>
+                <Pas2>29</Pas2>
+                <Ganador>1</Ganador>
+                <Tecnica>Mataleon fulminante</Tecnica>
+                </Pelea>
+            </Peleas>
+            </Evento>'));
+
+-- ninguno
+INSERT INTO evento VALUES 
+(992, XMLTYPE('<Evento>  
+            <Fecha>30/01/2023</Fecha>
+            <Nombre>Kick that B88ch</Nombre>
+            <Peleas>
+                <Pelea>
+                <Pas1>55</Pas1>
+                <Pas2>66</Pas2>
+                <Ganador>0</Ganador>
+                </Pelea>
+                <Pelea>
+                <Pas1>55</Pas1>
+                <Pas2>300</Pas2>
+                <Ganador>1</Ganador>
+                <Tecnica>Mataleon fulminante</Tecnica>
+                </Pelea>
+            </Peleas>
+            </Evento>'));
+
+INSERT INTO evento VALUES 
+(994, XMLTYPE('<Evento>  
+            <Fecha>30/01/2023</Fecha>
+            <Nombre>Kick that B88ch</Nombre>
+            <Peleas>
+            </Peleas>
+            </Evento>'));
