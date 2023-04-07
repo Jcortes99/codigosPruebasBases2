@@ -1,0 +1,31 @@
+multichain-util create chain1
+
+multichaind chain1 –daemon
+
+multichain-cli chain1 getrawtransaction [txid] 1
+
+multichain-cli chain1 create stream stream1 "{\"restrict\":\"write\"}"
+
+multichain-cli chain1 listpermissions stream1.*
+
+multichain-cli chain1 liststreams
+
+multichain-cli chain1 subscribe stream1
+
+multichain-cli chain1 liststreamitems stream1
+
+multichain-cli chain1 sendasset 1Jq4jqZfnFoMHRdumQcVF9p7WKE4UpWqoKibJX asset1 100
+
+multichain-cli chain1 gettotalbalances 0
+
+multichain-cli chain1 listpermissions issue
+
+multichain-cli chain1 getlastblockinfo 0
+
+multichain-cli chain1 getblock [hash]
+
+multichain-cli chain1 create [tipo] [nombre] [restricciones] [código]
+
+multichain-cli chain1 create txfilter [nombre] [restricciones] [código]
+
+multichain-cli chain1 create streamfilter [nombre] [restricciones] [código]
