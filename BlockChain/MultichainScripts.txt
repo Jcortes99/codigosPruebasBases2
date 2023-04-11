@@ -29,3 +29,30 @@ multichain-cli chain1 create [tipo] [nombre] [restricciones] [código]
 multichain-cli chain1 create txfilter [nombre] [restricciones] [código]
 
 multichain-cli chain1 create streamfilter [nombre] [restricciones] [código]
+
+multichain-cli chain1 create streamfilter filtro1 "{}" "function filterstreamitem() { var obj = getfilterstreamitem(); if (obj.keys.length<2) return \"Se requieren dos claves\"; }"
+
+multichain-cli chain1 getfiltercode [nombre]
+
+multichain-cli chain1 getfiltercode filtro1
+
+
+multichain-cli Titulos liststreamitems Graduandos
+
+multichain-cli Titulos subscribe Graduandos
+
+multichain-cli Titulos listpermissions Graduandos.*
+
+multichain-cli Titulos listpermissions issue
+
+multichain-cli Titulos getfiltercode prueba
+
+
+
+multichain-cli Titulos create streamfilter prueba2 "{}" "function filterstreamitem() { var item=getfilterstreamitem(); if (item.keys.length<2) return "item2"; }"
+
+multichain-cli Titulos approvefrom 13C6ZyVcKThcT6qbXaUaHMK6mejMpoEZHvkV7Q prueba "{\"for\": \"Graduandos\", \"approve\": true}"
+
+multichain-cli Titulos approvefrom 13C6ZyVcKThcT6qbXaUaHMK6mejMpoEZHvkV7Q prueba2 "{\"for\": \"Graduandos\", \"approve\": true}"
+
+multichain-cli Titulos publish Graduandos keyprueba abcdef

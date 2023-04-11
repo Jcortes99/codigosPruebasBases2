@@ -1,0 +1,84 @@
+
+
+multichain-cli Titulos create streamfilter test1 "{}" "function filterstreamitem() {
+    var obj = getfilterstreamitem();
+    var json = obj.data.json;
+    if(obj.publishers[0] == \"1WdAorDXhDAae6gDiSd2ovHbDJidgeyi7nyXnT\"){
+        if (obj.keys.length == 1){
+            if (obj.format!=\"json\") return \"Solo se permiten datos tipo JSON\";
+            if (!json.hasOwnProperty(\"nombre\")) return \"El JSON debe contener el campo nombre\";
+            if (!json.hasOwnProperty(\"apellidos\")) return \"El JSON debe contener el campo apellidos\";
+            if (!json.hasOwnProperty(\"celular\")) return \"El JSON debe contener el campo celular\";
+            if (typeof json[\"celular\"] != \"number\") return \"El campo celular debe ser un numero\";
+            if (json[\"celular\"].length < 10) return \"El campo celular debe ser un numero mayor de 10 digitos\";
+            if (json[\"celular\"].length > 15) return \"El campo celular debe ser un numero menor de 15 digitos\";
+            if (!json.hasOwnProperty(\"fecha_nacimiento\") ) return \"El JSON debe contener el campo fecha_nacimiento\";
+
+
+            
+            let a = json[\"fecha_nacimiento\"].split("-");
+
+            if (isNaN(a[0])||isNaN(a[1])||isNaN(a[2])) return \"La fehca debe tener un formato valido DD/MM/YYY\";
+            if (1>a[0]||a[0]>31) return \"El día debe estar entre 1 y 31\";
+            if (a[1]=="02" && a[0]>"28") return \"El día debe ser menor que 28 en febrero\";
+            if (1>a[1]||a[1]>12) return \"El mes debe estar entre 1 y 12\";
+            if (a[2]<0) return \"El ano debe ser positivo\";
+
+
+
+            if (isNaN(obj.keys[0])) return \"La llave debe ser un numero\";
+            if (obj.keys[0].length < 10){
+                return \"Error, el pasaporte tiene menos de 10 digitos\";
+            } else if (obj.keys[0].length > 15){
+                return \"Error, el pasaporte tiene mas de 15 digitos\";
+                }
+            } else{
+                return \"Error, solo debe existir 1 llave (key)\";
+            }} else{return \"Error, esta operacion solo se puede hacer desde el nodo 2\";}}"
+
+
+multichain-cli Titulos create streamfilter test4 "{}" "function filterstreamitem() {var obj = getfilterstreamitem();var json = obj.data.json;if(obj.publishers[0] == \"1WdAorDXhDAae6gDiSd2ovHbDJidgeyi7nyXnT\"){if (obj.keys.length == 1){if (obj.format!=\"json\") return \"Solo se permiten datos tipo JSON\";if (!json.hasOwnProperty(\"nombre\")) return \"El JSON debe contener el campo nombre\";if (!json.hasOwnProperty(\"apellidos\")) return \"El JSON debe contener el campo apellidos\";if (!json.hasOwnProperty(\"celular\")) return \"El JSON debe contener el campo celular\";if (typeof json[\"celular\"] != \"number\") return \"El campo celular debe ser un numero\";if (json[\"celular\"].length < 10) return \"El campo celular debe ser un numero mayor de 10 digitos\";if (json[\"celular\"].length > 15) return \"El campo celular debe ser un numero menor de 15 digitos\";if (!json.hasOwnProperty(\"fecha_nacimiento\") ) return \"El JSON debe contener el campo fecha_nacimiento\";let a = json[\"fecha_nacimiento\"];if (isNaN(obj.keys[0])) return \"La llave debe ser un numero\";if (obj.keys[0].length < 10){return \"Error, el pasaporte tiene menos de 10 digitos\";} else if (obj.keys[0].length > 15){return \"Error, el pasaporte tiene mas de 15 digitos\";}} else{return \"Error, solo debe existir 1 llave (key)\";}} else{return \"Error, esta operacion solo se puede hacer desde el nodo 2\";}}"
+
+
+multichain-cli Titulos create streamfilter test4 "{}" "function filterstreamitem() {var obj = getfilterstreamitem();var json = obj.data.json;if(obj.publishers[0] == \"1WdAorDXhDAae6gDiSd2ovHbDJidgeyi7nyXnT\"){if (obj.keys.length == 1){if (obj.format!=\"json\") return \"Solo se permiten datos tipo JSON\";if (!json.hasOwnProperty(\"nombre\")) return \"El JSON debe contener el campo nombre\";if (!json.hasOwnProperty(\"apellidos\")) return \"El JSON debe contener el campo apellidos\";if (!json.hasOwnProperty(\"celular\")) return \"El JSON debe contener el campo celular\";if (typeof json[\"celular\"] != \"number\") return \"El campo celular debe ser un numero\";if (json[\"celular\"].length < 10) return \"El campo celular debe ser un numero mayor de 10 digitos\";if (json[\"celular\"].length > 15) return \"El campo celular debe ser un numero menor de 15 digitos\";if (!json.hasOwnProperty(\"fecha_nacimiento\") ) return \"El JSON debe contener el campo fecha_nacimiento\";if (isNaN(obj.keys[0])) return \"La llave debe ser un numero\";if (obj.keys[0].length < 10){return \"Error, el pasaporte tiene menos de 10 digitos\";} else if (obj.keys[0].length > 15){return \"Error, el pasaporte tiene mas de 15 digitos\";}} else{return \"Error, solo debe existir 1 llave (key)\";}} else{return \"Error, esta operacion solo se puede hacer desde el nodo 2\";}}"
+
+
+
+
+
+
+
+multichain-cli Titulos create streamfilter test3 "{}" "function filterstreamitem() {var obj = getfilterstreamitem();var json = obj.data.json;if(obj.publishers[0] == \"1WdAorDXhDAae6gDiSd2ovHbDJidgeyi7nyXnT\"){if (obj.keys.length == 1){if (obj.format!=\"json\") return \"Solo se permiten datos tipo JSON\";if (!json.hasOwnProperty(\"nombre\") ) return \"El JSON debe contener el campo nombre\";if (!json.hasOwnProperty(\"apellidos\") ) return \"El JSON debe contener el campo apellidos\";if (!json.hasOwnProperty(\"celular\") ) return \"El JSON debe contener el campo celular\";if (typeof json[\"celular\"] != \"number\") return \"El campo celular debe ser un numero\";if (json[\"celular\"].length < 10) return \"El campo celular debe ser un numero mayor de 10 digitos\";if (json[\"celular\"].length > 15) return \"El campo celular debe ser un numero menor de 15 digitos\";if (!json.hasOwnProperty(\"fecha_nacimiento\") ) return \"El JSON debe contener el campo fecha_nacimiento\";let a = json[\"fecha_nacimiento\"].split("-");if (isNaN[0]||isNaN[1]||isNaN[2]) return \"La fehca debe tener un formato valido DD/MM/YYY\";if (1>a[0]||a[0]>31) return \"El día debe estar entre 1 y 31\";if (02==a[1] && a[0]>28) return \"El día debe ser menor que 28 en febrero\";if (1>a[1]||a[1]>12) return \"El mes debe estar entre 1 y 12\";if (a[2]<0) return \"El ano debe ser positivo\";if (isNaN(obj.keys[0])) return \"La llave debe ser un numero\";if (obj.keys[0].length < 10){return \"Error, el pasaporte tiene menos de 10 digitos\";} else if (obj.keys[0].length > 15){return \"Error, el pasaporte tiene mas de 15 digitos\";}} else{return \"Error, solo debe existir 1 llave (key)\";}} else{return \"Error, esta operacion solo se puede hacer desde el nodo 2\";}}"
+
+multichain-cli Titulos approvefrom 1WdAorDXhDAae6gDiSd2ovHbDJidgeyi7nyXnT test3 "{\"for\": \"Graduandos\", \"approve\": true}"
+
+multichain-cli Titulos publish Graduandos 1234567891 "{\"json\":{\"nombre\":\"John\",\"apellidos\":\"Doe\",\"fecha_nacimiento\":\"213123\",\"celular\":"2131251323"}}"
+
+multichain-cli Titulos approvefrom 1WdAorDXhDAae6gDiSd2ovHbDJidgeyi7nyXnT test3 "{\"for\": \"Graduandos\", \"approve\": false}"
+
+
+
+
+
+
+
+========================================================================================================================================================================================================================================================================================
+========================================================================================================================================================================================================================================================================================
+========================================================================================================================================================================================================================================================================================
+
+Segunda stream
+
+
+multichain-cli Titulos create streamfilter test1 "{}" "function filterstreamitem() {
+    var obj = getfilterstreamitem();
+    var json = obj.data.json;
+    if(obj.publishers[0] == \"1WdAorDXhDAae6gDiSd2ovHbDJidgeyi7nyXnT\"){
+        if (obj.keys.length == 2){
+            if (obj.format!=\"json\") return \"Solo se permiten datos tipo JSON\";
+            if (!json.hasOwnProperty(\"fecha_expedicion\")) return \"El JSON debe contener el campo nombre\";
+            if (!json.hasOwnProperty(\"diploma\")) return \"El JSON debe contener el campo apellidos\";
+            } else{
+                return \"Error, deben existir 2 llaves (keys)\";
+            }
+        } else{
+        return \"Error, esta operacion solo se puede hacer desde el nodo 2\";}}"

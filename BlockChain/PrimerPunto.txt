@@ -1,0 +1,55 @@
+1 Create chain Titulos
+
+    multichain-util create Titulos
+
+    multichaind Titulos –daemon
+
+2 Desde el segundo nodo nos conectamos y damos los permisos desde el nodo admin:
+
+    multichaind Titulos@[ip]:[puerto]
+
+    multichain-cli Titulos getaddresses
+
+    multichain-cli Titulos grant [Direccion2] connect
+
+    multichain-cli Titulos grant [Direccion2] send
+
+    multichain-cli Titulos grant [Direccion2] receive
+
+3 Crearmos los 2 streams nodo admin:
+
+    multichain-cli Titulos create stream Graduandos "{\"restrict\":\"write\"}"
+
+    multichain-cli Titulos create stream Certificados "{\"restrict\":\"write\"}"
+
+4 Damos los permisos nodo admin
+
+    multichain-cli Titulos grant [Direccion2] Graduandos.read
+
+    multichain-cli Titulos grant [Direccion2] Graduandos.write
+
+    multichain-cli Titulos grant [Direccion2] Certificados.read
+
+    multichain-cli Titulos grant [Direccion2] Certificados.write
+
+5 Desde el nodo dos nos suscribimos a los streams
+
+    multichain-cli Titulos subscribe Graduandos
+
+	multichain-cli Titulos subscribe Certificados
+
+6 Smart filters de streams nodo admin
+
+    ================================================================================================================================================================
+    ======================================================== NOTA: No se ha controlado las fechas en todos ========================================================
+    ================================================================================================================================================================
+
+    multichain-cli Titulos create streamfilter filtroGraduandos "{}" "function filterstreamitem() {var obj = getfilterstreamitem();var json = obj.data.json;if(obj.publishers[0] == \"[Direccion2]\"){if (obj.keys.length == 1){if (obj.format!=\"json\") return \"Solo se permiten datos tipo JSON\";if (!json.hasOwnProperty(\"nombre\")) return \"El JSON debe contener el campo nombre\";if (!json.hasOwnProperty(\"apellidos\")) return \"El JSON debe contener el campo apellidos\";if (!json.hasOwnProperty(\"celular\")) return \"El JSON debe contener el campo celular\";if (typeof json[\"celular\"] != \"number\") return \"El campo celular debe ser un numero\";if (json[\"celular\"].length < 10) return \"El campo celular debe ser un numero mayor de 10 digitos\";if (json[\"celular\"].length > 15) return \"El campo celular debe ser un numero menor de 15 digitos\";if (!json.hasOwnProperty(\"fecha_nacimiento\") ) return \"El JSON debe contener el campo fecha_nacimiento\";if (isNaN(obj.keys[0])) return \"La llave debe ser un numero\";if (obj.keys[0].length < 10){return \"Error, el pasaporte tiene menos de 10 digitos\";} else if (obj.keys[0].length > 15){return \"Error, el pasaporte tiene mas de 15 digitos\";}} else{return \"Error, solo debe existir 1 llave (key)\";}} else{return \"Error, esta operacion solo se puede hacer desde el nodo 2\";}}"
+
+    multichain-cli Titulos create streamfilter filtroCertificados "{}" "function filterstreamitem() {var obj = getfilterstreamitem();var json = obj.data.json;if(obj.publishers[0] == \"1WdAorDXhDAae6gDiSd2ovHbDJidgeyi7nyXnT\"){if (obj.keys.length == 2){if (obj.format!=\"json\") return \"Solo se permiten datos tipo JSON\";if (!json.hasOwnProperty(\"fecha_expedicion\")) return \"El JSON debe contener el campo nombre\";if (!json.hasOwnProperty(\"diploma\")) return \"El JSON debe contener el campo apellidos\";} else{return \"Error, deben existir 2 llaves (keys)\";}} else{return \"Error, esta operacion solo se puede hacer desde el nodo 2\";}}"
+    
+7 Permisos nodo 2
+
+    multichain-cli Titulos approvefrom [Direccion2] filtroCertificados "{\"for\": \"Certificados\", \"approve\": true}"
+
+    multichain-cli Titulos approvefrom [Direccion2] filtroGraduandos "{\"for\": \"Graduandos\", \"approve\": true}"
