@@ -1,0 +1,21 @@
+// SPDX-License-Identifier: GPL-3.0
+// versión de solidity
+pragma solidity >=0.8.0;
+contract Owner {
+    //Declaracion de variables
+    address private presidente; //El address del que creo el contrato
+
+    //Se crea la estructura propuesta
+    struc propuesta{
+        uint codigoPropuesta;
+        string textoPropuesta;
+        uint cantidadPropuestas;
+        uint costoVoto;
+        uint tiempoVoto;
+    }
+    propuesta[] public propuestas; //Se crea el arreglo de la estructura propuesta
+
+    constructor() public payable{
+        presidente = msg.sender; //Establece el presidente del contrato
+    }
+}
