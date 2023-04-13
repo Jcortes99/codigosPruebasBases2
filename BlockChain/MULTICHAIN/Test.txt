@@ -18,7 +18,7 @@ multichain-cli Titulos create streamfilter test1 "{}" "function filterstreamitem
             
             let a = json[\"fecha_nacimiento\"].split("-");
 
-            if (isNaN(a[0])||isNaN(a[1])||isNaN(a[2])) return \"La fehca debe tener un formato valido DD/MM/YYY\";
+            if (isNaN(a[0])||isNaN(a[1])||isNaN(a[2])) return \"La fehca debe tener un formato valido DD-MM-YYY\";
             if (1>a[0]||a[0]>31) return \"El día debe estar entre 1 y 31\";
             if (a[1]=="02" && a[0]>"28") return \"El día debe ser menor que 28 en febrero\";
             if (1>a[1]||a[1]>12) return \"El mes debe estar entre 1 y 12\";

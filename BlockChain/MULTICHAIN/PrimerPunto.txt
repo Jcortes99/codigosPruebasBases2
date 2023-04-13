@@ -6,9 +6,17 @@
 
 2 Desde el segundo nodo nos conectamos y damos los permisos desde el nodo admin:
 
+    Nodo 2
+
     multichaind Titulos@[ip]:[puerto]
 
     multichain-cli Titulos getaddresses
+
+    ================================================================================================================================================================
+    ============================== NOTA: En todo lugar donde este [Direccion2] se pone el hash del nodo 2  =========================================================
+    ================================================================================================================================================================
+
+    Nodo admin
 
     multichain-cli Titulos grant [Direccion2] connect
 
@@ -16,13 +24,13 @@
 
     multichain-cli Titulos grant [Direccion2] receive
 
-3 Crearmos los 2 streams nodo admin:
+3 Crearmos los 2 streams desde nodo admin:
 
     multichain-cli Titulos create stream Graduandos "{\"restrict\":\"write\"}"
 
     multichain-cli Titulos create stream Certificados "{\"restrict\":\"write\"}"
 
-4 Damos los permisos nodo admin
+4 Damos los permisos desde nodo admin:
 
     multichain-cli Titulos grant [Direccion2] Graduandos.read
 
