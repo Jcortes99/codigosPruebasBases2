@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="MultiChainJavaAPI-2.0.2-SNAPSHOT-jar-with-dependencies">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../MultiChainJavaAPI-2.0.2-SNAPSHOT-jar-with-dependencies.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -2,7 +2,7 @@
 
     multichain-util create Titulos
 
-    multichaind Titulos –daemon
+    multichaind Titulos -maxshowndata=131072
 
 2 Desde el segundo nodo nos conectamos y damos los permisos desde el nodo admin:
 
@@ -50,6 +50,6 @@
     
 7 Permisos nodo 2
 
-    multichain-cli Titulos approvefrom [Direccion2] filtroCertificados "{\"for\": \"Certificados\", \"approve\": true}"
+    multichain-cli Titulos approvefrom [Direccion2] filtroCertificados "{\"for\": \"Certificados\", \"approve\": false}"
 
-    multichain-cli Titulos approvefrom [Direccion2] filtroGraduandos "{\"for\": \"Graduandos\", \"approve\": true}"
+    multichain-cli Titulos approvefrom [Direccion2] filtroGraduandos "{\"for\": \"Graduandos\", \"approve\": false}"
